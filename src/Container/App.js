@@ -4,9 +4,12 @@ import Login from '../Components/LoginForm';
 
 function App() {
   return (
-    <div className="container-fluid App ">
-      <Login />
+    <div className='App' >
+      <div className="container-fluid ">
+        <Login />
+      </div>
     </div>
+
   );
 }
 
