@@ -1,15 +1,38 @@
 
+import Login from '../Components/Connexion/Login';
 import './App.css';
-import Login from '../Components/LoginForm';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import SignUp from '../Components/Connexion/Signup';
 
 function App() {
   return (
-    <div className='App' >
-      <div className="container-fluid ">
-        <Login />
+    <Router>
+      <div className='App' >
+        <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+          <div className="container">
+            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+              <ul className="navbar-nav ml-auto">
+                <li className="nav-item">
+                  <Link className="nav-link" to={'/sign-in'}>
+                    Home
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <div className="auth-wrapper">
+          <div className="auth-inner">
+            <Routes>
+              <Route exact path="/" element={<Login />} />
+              <Route path="/sign-in" element={<Login />} />
+              <Route path="/sign-up" element={<SignUp />} />
+            </Routes>
+          </div>
+        </div>
       </div>
-    </div>
 
+    </Router>
   );
 }
 
