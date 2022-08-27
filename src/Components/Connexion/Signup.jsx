@@ -2,44 +2,35 @@
 
 import { useState } from 'react';
 import { Form, Button, FloatingLabel } from 'react-bootstrap';
-import { BrowserRouter as Navigate, Routes, Route, Link } from 'react-router-dom'
-import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateCurrentUser, updateProfile } from 'firebase/auth'
-
+import { Link, useNavigate } from 'react-router-dom'
+import {
+    createUserWithEmailAndPassword, updateProfile
+} from 'firebase/auth'
 import './login.css'
 import { auth } from '../../DB/Firebase-config';
-import MyPanel from './MyPanel';
+
 import Login from './Login';
 
 
 function SignUp() {
 
-
     const [registerName, setRegisterName] = useState("")
     const [registerEmail, setRegisterEmail] = useState("")
     const [registerPassword, setRegisterPassword] = useState("")
+    const navigate = useNavigate();
 
-    const [user, setUser] = useState({})
-    onAuthStateChanged(auth, (currentUser) => {
-        setUser(currentUser)
-    })
-
-    const logout = async () => {
-        signOut(auth)
-    }
     const register = async (e) => {
         e.preventDefault();
         try {
-            const cUser = await createUserWithEmailAndPassword(auth, registerEmail, registerPassword)
-            // console.log(user);
-            if (cUser.length) {
-                // updateProfile(cUser, registerName)
-                console.log("it's successfull");
+            const user = await createUserWithEmailAndPassword(auth, registerEmail, registerPassword)
+            if (user) {
+                await updateProfile(auth.currentUser, {
+                    displayName: registerName
+                }).then(() => {
+                    console.log(auth.currentUser.displayName);
+                })
+                navigate('/newnotebook/myPanel')
             }
-
-
-            console.log(user?.email);
-            console.log(user?.displayName);
-            return <Navigate replace to="/myPanel" />;
         } catch (error) {
             console.log(error.message);
         }
@@ -62,19 +53,15 @@ function SignUp() {
                     <Form.Control type="password" placeholder="Password" onChange={(event) => setRegisterPassword(event.target.value)} />
                 </FloatingLabel>
 
-                <Button variant="outline-dark" type="submit" className='m-4' onClick={logout}>
+                <Button variant="outline-dark" type="submit" className='m-4' onClick={register}>
                     Sign up
                 </Button>
                 <Form.Group>
-                    <Link className="nav-link" to={'/sign-in'}>
+                    <Link className="nav-link" to={'/newnotebook/sign-in'}>
                         <p>Have an account ? <span className='signin-btn'>Login</span></p>
                     </Link>
                 </Form.Group>
             </Form>
-            <Routes>
-                <Route path="/sign-in" element={<Login />} />
-                <Route path="/myPanel" element={<MyPanel />} />
-            </Routes>
         </div>
     );
 }

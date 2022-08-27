@@ -1,22 +1,26 @@
 
 import { Form, Button, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './login.css'
-import SignUp from './Signup';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../DB/Firebase-config';
 
 
-function Login(user) {
+function Login() {
+
+    const navigate = useNavigate();
 
     const [loginEmail, setLoginrEmail] = useState("")
     const [loginPassword, setLoginPassword] = useState("")
+
     const login = async (e) => {
         e.preventDefault();
         try {
-            const cUser = await signInWithEmailAndPassword(auth, loginEmail, loginPassword)
-            console.log(cUser)
+            const user = await signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+            if (user) {
+                navigate('/newnotebook/myPanel')
+            }
         } catch (error) {
             console.log(error.message);
         }
@@ -42,14 +46,11 @@ function Login(user) {
                     Login
                 </Button>
                 <Form.Group>
-                    <Link className=" nav-link" to={'/sign-up'}>
+                    <Link className=" nav-link" to={'/newnotebook/sign-up'}>
                         <p>Don't have an account ? <span className='signup-btn'>Sign up</span></p>
                     </Link>
                 </Form.Group>
             </Form>
-            <Routes>
-                <Route path="/sign-up" element={<SignUp />} />
-            </Routes>
         </div>
     );
 }
